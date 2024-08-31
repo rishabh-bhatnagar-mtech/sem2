@@ -64,7 +64,7 @@ def n_queen_fitness(gene: Gene) -> float:
         for i in range(n) for j in range(i + 1, n)
     )
     total_n_pairs = (n * (n - 1)) << 1
-    return attacking_pairs / total_n_pairs
+    return (total_n_pairs - attacking_pairs) / total_n_pairs
 
 
 def main():
