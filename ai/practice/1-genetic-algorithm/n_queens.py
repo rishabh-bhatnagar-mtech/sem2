@@ -35,9 +35,15 @@ def select_parents(population: List[Gene], weights: List[float]) -> Tuple[Gene, 
     return parent1, parent2
 
 
-def genetic_algorithm(population: List[Gene], fitness: Callable[[Gene], float], max_time: int) -> Gene:
+def genetic_algorithm(population: List[Gene], fitness: Callable[[Gene], float], max_time: int,
+                      max_n_epochs: int) -> Gene:
     start_time = time.time()
-    while fitness(best_individual(population, fitness)) < 1 and (time.time() - start_time < max_time):
+    n_epochs = 0
+    while (
+            fitness(best_individual(population, fitness)) < 1 and
+            time.time() - start_time < max_time and
+            n_epochs < max_n_epochs
+    ):
         weights: List[float] = list(map(fitness, population))
         population2: List[Gene] = []
         for i in range(len(weights)):
@@ -47,6 +53,9 @@ def genetic_algorithm(population: List[Gene], fitness: Callable[[Gene], float], 
                 child = mutate(child)
             population2.append(child)
         population = population2
+        n_epochs += 1
+    time_elapsed = time.time() - start_time
+    print("Ran genetic algorithm for {} generations and took {:.3}s".format(n_epochs, time_elapsed))
     return best_individual(population, fitness)
 
 
@@ -71,8 +80,11 @@ def main():
     n_queens = 8
     population_size = 1000
     initial_population = list(get_seed_population(population_size, n_queens))
-    best_config = genetic_algorithm(initial_population, n_queen_fitness, max_time=10)
-    print(best_config, n_queen_fitness(best_config))
+    best_config = genetic_algorithm(
+        initial_population, n_queen_fitness,
+        max_time=10, max_n_epochs=100
+    )
+    print(f"Best Config: {best_config} with score={n_queen_fitness(best_config)}")
 
 
 if __name__ == '__main__':
