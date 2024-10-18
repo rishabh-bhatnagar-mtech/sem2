@@ -15,7 +15,7 @@ CACHE_FILE = 'results_cache.npy'
 
 # Genetic algorithm params:
 population_size = 1000
-n_queens = 9
+n_queens = 8
 
 # Check if cached results exist
 if os.path.exists(CACHE_FILE):
